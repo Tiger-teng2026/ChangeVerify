@@ -71,17 +71,34 @@ export function VerifyForm({
     <form onSubmit={onSubmit} className="mt-10 space-y-8">
       <div>
         <label htmlFor="original-task" className="block text-base font-semibold">
-          1. What did you ask your AI agent to do?
+          1. Paste the original instruction you gave your AI coding tool
         </label>
+        <p className="mt-2 text-sm leading-6 text-[#5c5348]">
+          Paste the exact task or prompt you gave Cursor, Claude Code, Codex, Windsurf, or another
+          AI coding tool before it made the code changes.
+        </p>
+        <p className="mt-2 text-sm leading-6 text-[#5c5348]">
+          Use the instruction for this specific change — not your entire project description and not
+          the AI’s completion report.
+        </p>
         <textarea
           id="original-task"
           value={originalTask}
           onChange={(event) => setOriginalTask(event.target.value)}
           rows={8}
+          placeholder={`Example:\n\nChange the checkout button text from "Buy Now" to "Continue to Payment".\n\nDo not modify payment logic, authentication, database schema, or other pages.`}
           className="mt-3 w-full rounded-lg border border-[#d9d0c1] bg-white px-4 py-3 text-sm leading-6 outline-none focus:border-[#9a3412]"
         />
         <p className={`mt-2 text-xs ${taskTooLong ? "text-[#9f1239]" : "text-[#6b6258]"}`}>
           {originalTask.length.toLocaleString()} / {maxTaskChars.toLocaleString()}
+        </p>
+        <p className="mt-2 text-sm leading-6 text-[#5c5348]">
+          <span className="font-semibold text-[#1c1915]">Not sure what to paste?</span> Copy the
+          message you originally sent to your AI coding tool that caused the current code changes.
+        </p>
+        <p className="mt-1 text-sm leading-6 text-[#6b6258]">
+          Tip: The more specific your original instruction is, the more useful the verification
+          report will be.
         </p>
       </div>
 
