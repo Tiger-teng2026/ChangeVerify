@@ -1,11 +1,12 @@
 "use client";
 
-import { useMemo, useState, type FormEvent } from "react";
+import { useMemo, useRef, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { DiffHelp } from "@/components/diff-help";
+import { focusSecretField, SecretWarning } from "@/components/secret-warning";
 import { DIFF_TOO_LARGE_ERROR, diffLimitState } from "@/lib/limits";
 import { setStoredReport, type StoredReport } from "@/lib/report-store";
-import { hasPotentialSecret } from "@/lib/secrets";
+import { detectPotentialSecrets, redactFindings, type SecretFinding } from "@/lib/secret-detection";
 
 const TEMPORARY_FAILURE = "Verification temporarily failed. Please try again.";
 
@@ -17,15 +18,19 @@ export function VerifyForm({
   maxTaskChars: number;
 }) {
   const router = useRouter();
+  const taskRef = useRef<HTMLTextAreaElement>(null);
+  const diffRef = useRef<HTMLTextAreaElement>(null);
   const [originalTask, setOriginalTask] = useState("");
   const [gitDiff, setGitDiff] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
-  const secretDetected = useMemo(
-    () => hasPotentialSecret(originalTask) || hasPotentialSecret(gitDiff),
-    [originalTask, gitDiff],
-  );
+  const secretFindings = useMemo(() => {
+    return [
+      ...detectPotentialSecrets(originalTask, "original-task"),
+      ...detectPotentialSecrets(gitDiff, "git-diff"),
+    ];
+  }, [originalTask, gitDiff]);
 
   const taskTooLong = originalTask.length > maxTaskChars;
   const diffState = diffLimitState(gitDiff.length, hardMaxDiffChars);
@@ -37,6 +42,27 @@ export function VerifyForm({
     gitDiff.trim().length === 0 ||
     taskTooLong ||
     diffTooLong;
+
+  function redactFinding(finding: SecretFinding) {
+    if (finding.source === "original-task") {
+      setOriginalTask((current) => redactFindings(current, [finding]));
+      return;
+    }
+    setGitDiff((current) => redactFindings(current, [finding]));
+  }
+
+  function redactAllFindings() {
+    const taskFindings = secretFindings.filter((finding) => finding.source === "original-task");
+    const diffFindings = secretFindings.filter((finding) => finding.source === "git-diff");
+    setOriginalTask((current) => redactFindings(current, taskFindings));
+    setGitDiff((current) => redactFindings(current, diffFindings));
+  }
+
+  function jumpToFinding(finding: SecretFinding) {
+    const element = finding.source === "original-task" ? taskRef.current : diffRef.current;
+    if (!element) return;
+    focusSecretField(element, finding);
+  }
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -83,6 +109,7 @@ export function VerifyForm({
         </p>
         <textarea
           id="original-task"
+          ref={taskRef}
           value={originalTask}
           onChange={(event) => setOriginalTask(event.target.value)}
           rows={8}
@@ -112,6 +139,7 @@ export function VerifyForm({
         <DiffHelp />
         <textarea
           id="git-diff"
+          ref={diffRef}
           value={gitDiff}
           onChange={(event) => setGitDiff(event.target.value)}
           rows={14}
@@ -140,15 +168,12 @@ export function VerifyForm({
         keys, and other sensitive credentials.
       </div>
 
-      {secretDetected ? (
-        <div className="rounded-lg border border-[#f59e0b] bg-[#fff7ed] px-4 py-3 text-sm leading-6 text-[#9a3412]">
-          <p className="font-semibold">Potential secret detected.</p>
-          <p className="mt-1">
-            Before submitting, remove API keys, passwords, access tokens, private keys, and other
-            sensitive credentials.
-          </p>
-        </div>
-      ) : null}
+      <SecretWarning
+        findings={secretFindings}
+        onJump={jumpToFinding}
+        onRedact={redactFinding}
+        onRedactAll={redactAllFindings}
+      />
 
       {error ? <p className="text-sm text-[#9f1239]">{error}</p> : null}
 
