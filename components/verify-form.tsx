@@ -2,16 +2,18 @@
 
 import { useMemo, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import { DiffHelp } from "@/components/diff-help";
+import { DIFF_TOO_LARGE_ERROR, diffLimitState } from "@/lib/limits";
 import { setStoredReport, type StoredReport } from "@/lib/report-store";
 import { hasPotentialSecret } from "@/lib/secrets";
 
 const TEMPORARY_FAILURE = "Verification temporarily failed. Please try again.";
 
 export function VerifyForm({
-  maxDiffChars,
+  hardMaxDiffChars,
   maxTaskChars,
 }: {
-  maxDiffChars: number;
+  hardMaxDiffChars: number;
   maxTaskChars: number;
 }) {
   const router = useRouter();
@@ -26,7 +28,9 @@ export function VerifyForm({
   );
 
   const taskTooLong = originalTask.length > maxTaskChars;
-  const diffTooLong = gitDiff.length > maxDiffChars;
+  const diffState = diffLimitState(gitDiff.length, hardMaxDiffChars);
+  const diffTooLong = diffState === "too_large";
+  const largeDiff = diffState === "large";
   const blocked =
     pending ||
     originalTask.trim().length === 0 ||
@@ -86,8 +90,9 @@ export function VerifyForm({
           2. Paste the Git diff
         </label>
         <p className="mt-2 text-sm leading-6 text-[#5c5348]">
-          In Cursor or your terminal, copy the diff for the AI-generated changes.
+          Copy the diff for the changes your AI coding tool made.
         </p>
+        <DiffHelp />
         <textarea
           id="git-diff"
           value={gitDiff}
@@ -97,8 +102,20 @@ export function VerifyForm({
           className="mt-3 w-full rounded-lg border border-[#d9d0c1] bg-white px-4 py-3 font-mono text-xs leading-5 outline-none focus:border-[#9a3412]"
         />
         <p className={`mt-2 text-xs ${diffTooLong ? "text-[#9f1239]" : "text-[#6b6258]"}`}>
-          {gitDiff.length.toLocaleString()} / {maxDiffChars.toLocaleString()}
+          {gitDiff.length.toLocaleString()} / {hardMaxDiffChars.toLocaleString()}
         </p>
+        {largeDiff ? (
+          <div className="mt-3 rounded-lg border border-[#f59e0b] bg-[#fff7ed] px-4 py-3 text-sm leading-6 text-[#9a3412]">
+            <p className="font-semibold">Large diff detected.</p>
+            <p className="mt-1">
+              ChangeVerify works best with small, single-task changes. Results may be less precise
+              for larger diffs.
+            </p>
+          </div>
+        ) : null}
+        {diffTooLong ? (
+          <p className="mt-3 whitespace-pre-line text-sm leading-6 text-[#9f1239]">{DIFF_TOO_LARGE_ERROR}</p>
+        ) : null}
       </div>
 
       <div className="rounded-lg border border-[#e4d9c8] bg-[#faf7f1] px-4 py-3 text-sm leading-6 text-[#5c5348]">

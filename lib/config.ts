@@ -1,18 +1,21 @@
-/**
- * Formal V1 diff cap is 30,000 characters.
- * Capacity-test presets remain available via MAX_DIFF_CHARS:
- * 5000 | 15000 | 30000 | 50000
- */
-function readMaxDiffChars(): number {
-  const raw = process.env.MAX_DIFF_CHARS;
-  if (!raw) return 30_000;
+import { HARD_MAX_DIFF_CHARS } from "@/lib/limits";
+
+export {
+  DIFF_TOO_LARGE_ERROR,
+  HARD_MAX_DIFF_CHARS,
+  MAX_TASK_CHARS,
+  RECOMMENDED_DIFF_CHARS,
+  diffLimitState,
+} from "@/lib/limits";
+
+/** Server hard max. MAX_DIFF_CHARS overrides the 50,000 default when it is a positive integer. */
+export function readHardMaxDiffChars(): number {
+  const raw = process.env["MAX_DIFF_CHARS"];
+  if (!raw) return HARD_MAX_DIFF_CHARS;
   const parsed = Number(raw);
-  if (!Number.isInteger(parsed) || parsed <= 0) return 30_000;
+  if (!Number.isInteger(parsed) || parsed <= 0) return HARD_MAX_DIFF_CHARS;
   return parsed;
 }
-
-export const MAX_TASK_CHARS = 15_000;
-export const MAX_DIFF_CHARS = readMaxDiffChars();
 
 export const DEEPSEEK_MODEL = process.env.DEEPSEEK_MODEL?.trim() || "deepseek-flash";
 

@@ -1,6 +1,10 @@
+import { ProductIntro } from "@/components/product-intro";
 import { Shell } from "@/components/shell";
 import { VerifyForm } from "@/components/verify-form";
-import { MAX_DIFF_CHARS, MAX_TASK_CHARS } from "@/lib/config";
+import { readHardMaxDiffChars } from "@/lib/config";
+import { MAX_TASK_CHARS } from "@/lib/limits";
+
+export const dynamic = "force-dynamic";
 
 export default function HomePage() {
   return (
@@ -12,7 +16,8 @@ export default function HomePage() {
         Paste your original task and Git diff. Get an independent check for missing requirements,
         scope creep, and risky changes before you ship.
       </p>
-      <VerifyForm maxDiffChars={MAX_DIFF_CHARS} maxTaskChars={MAX_TASK_CHARS} />
+      <ProductIntro />
+      <VerifyForm hardMaxDiffChars={readHardMaxDiffChars()} maxTaskChars={MAX_TASK_CHARS} />
     </Shell>
   );
 }

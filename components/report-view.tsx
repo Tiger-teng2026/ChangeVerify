@@ -1,5 +1,6 @@
 "use client";
 
+import { AiHandoff } from "@/components/ai-handoff";
 import type { VerificationReport } from "@/lib/schema";
 import type { StoredReport } from "@/lib/report-store";
 
@@ -158,6 +159,8 @@ export function ReportView({ result }: { result: StoredReport }) {
           </ol>
         )}
       </section>
+
+      <AiHandoff report={report} />
 
       <section>
         <h2 className="text-lg font-semibold">Limitations</h2>

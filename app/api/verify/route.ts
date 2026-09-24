@@ -1,4 +1,5 @@
-import { MAX_DIFF_CHARS, MAX_TASK_CHARS } from "@/lib/config";
+import { readHardMaxDiffChars } from "@/lib/config";
+import { DIFF_TOO_LARGE_ERROR, MAX_TASK_CHARS } from "@/lib/limits";
 import { verifyChange } from "@/lib/deepseek";
 import { logVerifyEvent } from "@/lib/log";
 import { z } from "zod";
@@ -68,9 +69,9 @@ export async function POST(request: Request) {
     });
   }
 
-  if (diffCharCount > MAX_DIFF_CHARS) {
+  if (diffCharCount > readHardMaxDiffChars()) {
     return finish(requestId, started, 400, {
-      error: `Git diff must be ${MAX_DIFF_CHARS} characters or fewer.`,
+      error: DIFF_TOO_LARGE_ERROR,
     }, {
       errorCode: "diff_too_long",
       taskCharCount,
