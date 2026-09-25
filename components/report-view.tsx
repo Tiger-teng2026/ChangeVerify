@@ -304,7 +304,7 @@ function PreviewReport({
         <h2 className="text-lg font-semibold">Unlock Full Report for This Change</h2>
         <p className="mt-2 text-sm leading-6 text-[#5c5348]">{UNLOCK_PRICE_LABEL}</p>
         <div className="mt-3 text-sm leading-6 text-[#5c5348]">
-          <p>One-time payment.</p>
+          <p>One-time payment for this verification report.</p>
           <p>No subscription.</p>
           <p>No recurring charges.</p>
         </div>
