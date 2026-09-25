@@ -32,11 +32,26 @@ const RECOMMENDED_ACTION: Record<VerificationReport["verdict"], string> = {
 };
 
 const FULL_REPORT_INCLUDES = [
-  "Requirement coverage analysis",
-  "Missing requirement detection",
-  "Scope creep analysis",
-  "File impact review",
-  "Suggested next actions",
+  {
+    title: "Complete verification report for this AI code change",
+    detail: "The full report for this change only. It does not unlock other changes.",
+  },
+  {
+    title: "Requirement coverage analysis",
+    detail: "See which parts of the original task this change appears to cover.",
+  },
+  {
+    title: "Scope creep detection",
+    detail: "See changes that go beyond the original request.",
+  },
+  {
+    title: "Risky change review",
+    detail: "See changes that may need attention before you ship.",
+  },
+  {
+    title: "AI fix instructions",
+    detail: "Get instructions you can paste into your AI coding tool.",
+  },
 ];
 
 const STATUS_LABEL: Record<VerificationReport["requirements"][number]["status"], string> = {
@@ -250,7 +265,10 @@ function PreviewReport({
         </div>
         <div className="mt-4 rounded-lg border border-[#d9d0c1] bg-white px-4 py-3 text-sm leading-6 text-[#3f3832]">
           <p>Based only on the Original Task and provided Git diff.</p>
-          <p className="mt-2">This is a free preview. The full report stays locked until payment is confirmed.</p>
+          <p className="mt-2">
+            This is a free preview of this change. One payment unlocks the full report for this
+            change only.
+          </p>
         </div>
       </section>
       <section>
@@ -272,27 +290,36 @@ function PreviewReport({
       </section>
       <RecommendedAction verdict={result.preview.verdict} />
       <section>
-        <h2 className="text-lg font-semibold">Full Report Includes</h2>
-        <ul className="mt-4 list-disc space-y-2 pl-5 text-sm leading-6 text-[#3f3832]">
+        <h2 className="text-lg font-semibold">What you get</h2>
+        <ul className="mt-4 space-y-3">
           {FULL_REPORT_INCLUDES.map((item) => (
-            <li key={item}>{item}</li>
+            <li key={item.title} className="rounded-lg border border-[#e4d9c8] bg-[#faf7f1] px-4 py-3">
+              <p className="font-semibold text-[#1c1915]">{item.title}</p>
+              <p className="mt-1 text-[#5c5348]">{item.detail}</p>
+            </li>
           ))}
         </ul>
       </section>
       <section className="rounded-xl border border-[#e4d9c8] bg-white px-5 py-5">
-        <h2 className="text-lg font-semibold">Unlock Full Report</h2>
-        <p className="mt-2 text-sm leading-6 text-[#5c5348]">{UNLOCK_PRICE_LABEL} one-time</p>
-        <p className="mt-4 text-sm leading-6 text-[#5c5348]">
-          Your code diff is only analyzed for this verification. ChangeVerify does not access your
-          repository or store your code history.
-        </p>
+        <h2 className="text-lg font-semibold">Unlock Full Report for This Change</h2>
+        <p className="mt-2 text-sm leading-6 text-[#5c5348]">{UNLOCK_PRICE_LABEL}</p>
+        <div className="mt-3 text-sm leading-6 text-[#5c5348]">
+          <p>One-time payment.</p>
+          <p>No subscription.</p>
+          <p>No recurring charges.</p>
+        </div>
+        <div className="mt-4 rounded-lg border border-[#e4d9c8] bg-[#faf7f1] px-4 py-3 text-sm leading-6 text-[#5c5348]">
+          <p>Based on the Original Task and Git diff you provided.</p>
+          <p className="mt-2">ChangeVerify does not access your repository.</p>
+          <p className="mt-2">Your code is not stored.</p>
+        </div>
         <button
           type="button"
           onClick={onUnlock}
           disabled={unlockPending || !onUnlock}
           className="mt-4 rounded-full bg-[#1c1915] px-6 py-3 text-sm font-semibold text-[#f3efe6] disabled:cursor-not-allowed disabled:opacity-40"
         >
-          {unlockPending ? "Opening checkout…" : "Unlock Full Report"}
+          {unlockPending ? "Opening checkout…" : "Unlock Full Report for This Change"}
         </button>
         {unlockError ? <p className="mt-3 text-sm text-[#9f1239]">{unlockError}</p> : null}
       </section>
