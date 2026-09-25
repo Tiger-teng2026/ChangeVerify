@@ -136,6 +136,12 @@ export function VerifyForm({
         <p className="mt-2 text-sm leading-6 text-[#5c5348]">
           Copy the diff for the changes your AI coding tool made.
         </p>
+        <p className="mt-2 text-sm leading-6 text-[#5c5348]">
+          Your diff is used only for this verification. We don&apos;t store your code history.
+        </p>
+        <p className="mt-1 text-sm leading-6 text-[#5c5348]">
+          ChangeVerify only analyzes the Git diff you provide. It does not access your repository.
+        </p>
         <DiffHelp />
         <textarea
           id="git-diff"

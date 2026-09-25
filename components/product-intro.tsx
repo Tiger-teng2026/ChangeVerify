@@ -54,20 +54,16 @@ export function ProductIntro() {
             </dd>
           </div>
           <div>
-            <dt className="font-semibold text-[#1c1915]">Git Diff</dt>
-            <dd className="mt-1 whitespace-pre-line">
-              app/page.tsx changed{"\n"}lib/payment.ts changed
-            </dd>
+            <dt className="font-semibold text-[#1c1915]">AI Changed</dt>
+            <dd className="mt-1 whitespace-pre-line">{"app/page.tsx\nlib/payment.ts"}</dd>
           </div>
           <div>
             <dt className="font-semibold text-[#1c1915]">Result</dt>
             <dd className="mt-1 font-semibold text-[#9a3412]">NEEDS REVIEW</dd>
           </div>
           <div>
-            <dt className="font-semibold text-[#1c1915]">Reason</dt>
-            <dd className="mt-1">
-              Payment-related code was modified even though it appears outside the requested task.
-            </dd>
+            <dt className="font-semibold text-[#1c1915]">Why</dt>
+            <dd className="mt-1">Payment-related code changed outside the requested task.</dd>
           </div>
         </dl>
       </section>
