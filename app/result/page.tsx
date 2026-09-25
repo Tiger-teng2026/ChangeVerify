@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useSyncExternalStore } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { ReportView } from "@/components/report-view";
 import { Shell } from "@/components/shell";
 import { clearStoredReport, getStoredReport } from "@/lib/report-store";
@@ -12,6 +12,31 @@ function subscribe() {
 
 export default function ResultPage() {
   const result = useSyncExternalStore(subscribe, getStoredReport, () => null);
+  const [unlockPending, setUnlockPending] = useState(false);
+  const [unlockError, setUnlockError] = useState<string | null>(null);
+
+  async function onUnlock() {
+    if (!result || result.access !== "preview" || unlockPending) return;
+    setUnlockPending(true);
+    setUnlockError(null);
+    try {
+      const response = await fetch("/api/create-checkout", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ unlockToken: result.unlockToken }),
+      });
+      const payload = (await response.json().catch(() => null)) as { checkoutUrl?: string; error?: string } | null;
+      if (!response.ok || !payload?.checkoutUrl) {
+        setUnlockError(payload?.error || "Checkout could not be started. Please try again.");
+        setUnlockPending(false);
+        return;
+      }
+      window.location.assign(payload.checkoutUrl);
+    } catch {
+      setUnlockError("Checkout could not be started. Please try again.");
+      setUnlockPending(false);
+    }
+  }
 
   return (
     <Shell>
@@ -28,7 +53,12 @@ export default function ResultPage() {
         </div>
       ) : (
         <div className="space-y-8">
-          <ReportView result={result} />
+          <ReportView
+            result={result}
+            onUnlock={result.access === "preview" ? onUnlock : undefined}
+            unlockPending={unlockPending}
+            unlockError={unlockError}
+          />
           <Link
             href="/"
             onClick={() => clearStoredReport()}

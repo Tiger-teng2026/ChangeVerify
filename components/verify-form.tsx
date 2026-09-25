@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { DiffHelp } from "@/components/diff-help";
 import { focusSecretField, SecretWarning } from "@/components/secret-warning";
 import { DIFF_TOO_LARGE_ERROR, diffLimitState } from "@/lib/limits";
-import { setStoredReport, type StoredReport } from "@/lib/report-store";
+import { setStoredPreview, type StoredPreview } from "@/lib/report-store";
 import { detectPotentialSecrets, redactFindings, type SecretFinding } from "@/lib/secret-detection";
 
 const TEMPORARY_FAILURE = "Verification temporarily failed. Please try again.";
@@ -76,13 +76,27 @@ export function VerifyForm({
         body: JSON.stringify({ originalTask, gitDiff }),
       });
       const payload = (await response.json().catch(() => null)) as
-        | (StoredReport & { error?: string })
+        | (StoredPreview & { error?: string })
         | null;
-      if (!response.ok || !payload || !payload.report) {
+      if (
+        !response.ok ||
+        !payload?.preview ||
+        !payload.unlockToken ||
+        !payload.verificationId ||
+        !payload.reportHash
+      ) {
         setError(payload?.error || TEMPORARY_FAILURE);
         return;
       }
-      setStoredReport(payload);
+      setStoredPreview({
+        access: "preview",
+        requestId: payload.requestId,
+        verificationId: payload.verificationId,
+        reportHash: payload.reportHash,
+        unlockToken: payload.unlockToken,
+        truncated: Boolean(payload.truncated),
+        preview: payload.preview,
+      });
       setOriginalTask("");
       setGitDiff("");
       router.push("/result");

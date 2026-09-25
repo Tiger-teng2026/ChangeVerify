@@ -1,41 +1,44 @@
 "use client";
 
+import type { ReportPreview } from "@/lib/report-token";
 import type { VerificationReport } from "@/lib/schema";
 
-type AttemptLog = {
-  attempt: number;
-  outcome: "ok" | "empty_response" | "json_parse_failed" | "schema_invalid" | "upstream_error";
-  latencyMs: number;
-  inputTokens: number | null;
-  outputTokens: number | null;
-  cachedInputTokens: number | null;
-  reasoningTokens: number | null;
+const SESSION_KEY = "changeverify.payment";
+
+export type StoredPreview = {
+  access: "preview";
+  requestId: string;
+  verificationId: string;
+  reportHash: string;
+  unlockToken: string;
   truncated: boolean;
-  upstreamStatus: number | null;
+  preview: ReportPreview;
 };
 
-export type StoredReport = {
+export type StoredFull = {
+  access: "full";
   requestId: string;
-  endpoint: string;
-  model: string;
-  report: VerificationReport;
-  usage: {
-    inputTokens: number | null;
-    outputTokens: number | null;
-    cachedInputTokens: number | null;
-    reasoningTokens: number | null;
-  };
-  latencyMs: number;
-  retried: boolean;
-  attempts: AttemptLog[];
+  verificationId: string;
   truncated: boolean;
-  estimatedCostUsd: number | null;
-  costBasis: string | null;
+  report: VerificationReport;
+};
+
+export type StoredReport = StoredPreview | StoredFull;
+
+export type PaymentSession = {
+  unlockToken: string;
 };
 
 let current: StoredReport | null = null;
 
-export function setStoredReport(report: StoredReport) {
+export function setStoredPreview(report: StoredPreview) {
+  current = report;
+  if (typeof window === "undefined") return;
+  const session: PaymentSession = { unlockToken: report.unlockToken };
+  sessionStorage.setItem(SESSION_KEY, JSON.stringify(session));
+}
+
+export function setStoredFullReport(report: StoredFull) {
   current = report;
 }
 
@@ -43,6 +46,21 @@ export function getStoredReport() {
   return current;
 }
 
+export function readPaymentSession(): PaymentSession | null {
+  if (typeof window === "undefined") return null;
+  const raw = sessionStorage.getItem(SESSION_KEY);
+  if (!raw) return null;
+  try {
+    const parsed = JSON.parse(raw) as PaymentSession;
+    if (!parsed || typeof parsed.unlockToken !== "string" || parsed.unlockToken.length === 0) return null;
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
 export function clearStoredReport() {
   current = null;
+  if (typeof window === "undefined") return;
+  sessionStorage.removeItem(SESSION_KEY);
 }

@@ -1,7 +1,8 @@
 import { readHardMaxDiffChars } from "@/lib/config";
-import { DIFF_TOO_LARGE_ERROR, MAX_TASK_CHARS } from "@/lib/limits";
 import { verifyChange } from "@/lib/deepseek";
+import { DIFF_TOO_LARGE_ERROR, MAX_TASK_CHARS } from "@/lib/limits";
 import { logVerifyEvent } from "@/lib/log";
+import { sealReport } from "@/lib/report-token";
 import { z } from "zod";
 
 const requestSchema = z
@@ -92,18 +93,29 @@ export async function POST(request: Request) {
     });
   }
 
+  let sealed;
+  try {
+    sealed = sealReport({
+      requestId,
+      truncated: result.truncated,
+      report: result.report,
+    });
+  } catch {
+    return finish(requestId, started, 500, { error: TEMPORARY_FAILURE }, {
+      errorCode: "missing_report_secret",
+      taskCharCount,
+      diffCharCount,
+      model: result.model,
+    });
+  }
+
   return finish(requestId, started, 200, {
     requestId,
-    endpoint: result.endpoint,
-    model: result.model,
-    report: result.report,
-    usage: result.usage,
-    latencyMs: Date.now() - started,
-    retried: result.retried,
-    attempts: result.attempts,
+    verificationId: sealed.verificationId,
+    reportHash: sealed.reportHash,
+    unlockToken: sealed.unlockToken,
+    preview: sealed.preview,
     truncated: result.truncated,
-    estimatedCostUsd: result.estimatedCostUsd,
-    costBasis: result.costBasis,
   }, {
     taskCharCount,
     diffCharCount,

@@ -1,8 +1,9 @@
 "use client";
 
 import { AiHandoff } from "@/components/ai-handoff";
+import { UNLOCK_PRICE_LABEL } from "@/lib/unlock";
+import type { StoredFull, StoredPreview, StoredReport } from "@/lib/report-store";
 import type { VerificationReport } from "@/lib/schema";
-import type { StoredReport } from "@/lib/report-store";
 
 const VERDICT_VIEW = {
   PASS: {
@@ -28,7 +29,31 @@ const STATUS_LABEL: Record<VerificationReport["requirements"][number]["status"],
   possible_violation: "Possible Violation",
 };
 
-export function ReportView({ result }: { result: StoredReport }) {
+export function ReportView({
+  result,
+  onUnlock,
+  unlockPending = false,
+  unlockError = null,
+}: {
+  result: StoredReport;
+  onUnlock?: () => void;
+  unlockPending?: boolean;
+  unlockError?: string | null;
+}) {
+  if (result.access === "preview") {
+    return (
+      <PreviewReport
+        result={result}
+        onUnlock={onUnlock}
+        unlockPending={unlockPending}
+        unlockError={unlockError}
+      />
+    );
+  }
+  return <FullReport result={result} />;
+}
+
+function FullReport({ result }: { result: StoredFull }) {
   const view = VERDICT_VIEW[result.report.verdict];
   const { report } = result;
 
@@ -178,6 +203,71 @@ export function ReportView({ result }: { result: StoredReport }) {
             ))}
           </ul>
         ) : null}
+      </section>
+    </div>
+  );
+}
+
+function PreviewReport({
+  result,
+  onUnlock,
+  unlockPending,
+  unlockError,
+}: {
+  result: StoredPreview;
+  onUnlock?: () => void;
+  unlockPending: boolean;
+  unlockError: string | null;
+}) {
+  const view = VERDICT_VIEW[result.preview.verdict];
+  return (
+    <div className="space-y-10">
+      <section>
+        <h1 className="text-sm font-semibold tracking-[0.16em] uppercase text-[#6b6258]">
+          Overall Verdict
+        </h1>
+        <div className={`mt-3 rounded-xl border px-5 py-5 ${view.tone}`}>
+          <p className="text-2xl font-semibold tracking-tight">{view.label}</p>
+          <p className="mt-2 text-sm leading-6">{view.note}</p>
+        </div>
+        <div className="mt-4 rounded-lg border border-[#d9d0c1] bg-white px-4 py-3 text-sm leading-6 text-[#3f3832]">
+          <p>Based only on the Original Task and provided Git diff.</p>
+          <p className="mt-2">This is a free preview. The full report stays locked until payment is confirmed.</p>
+        </div>
+      </section>
+      <section>
+        <h2 className="text-lg font-semibold">Summary</h2>
+        <p className="mt-3 text-sm leading-7 text-[#3f3832]">{result.preview.summary}</p>
+        <p className="mt-3 text-sm text-[#6b6258]">Files changed: {result.preview.filesChanged}</p>
+      </section>
+      <section>
+        <h2 className="text-lg font-semibold">Top 3 Things to Review</h2>
+        {result.preview.reviewFocus.length === 0 ? (
+          <Empty />
+        ) : (
+          <ol className="mt-4 list-decimal space-y-2 pl-5 text-sm leading-6 text-[#3f3832]">
+            {result.preview.reviewFocus.map((item, index) => (
+              <li key={`${item}-${index}`}>{item}</li>
+            ))}
+          </ol>
+        )}
+      </section>
+      <section className="rounded-xl border border-[#e4d9c8] bg-white px-5 py-5">
+        <h2 className="text-lg font-semibold">Unlock Full Report</h2>
+        <p className="mt-2 text-sm leading-6 text-[#5c5348]">{UNLOCK_PRICE_LABEL} one-time</p>
+        <p className="mt-2 text-sm leading-6 text-[#5c5348]">
+          Requirement coverage, missing requirements, scope creep, and risky changes open after
+          Creem confirms the payment.
+        </p>
+        <button
+          type="button"
+          onClick={onUnlock}
+          disabled={unlockPending || !onUnlock}
+          className="mt-4 rounded-full bg-[#1c1915] px-6 py-3 text-sm font-semibold text-[#f3efe6] disabled:cursor-not-allowed disabled:opacity-40"
+        >
+          {unlockPending ? "Opening checkout…" : "Unlock Full Report"}
+        </button>
+        {unlockError ? <p className="mt-3 text-sm text-[#9f1239]">{unlockError}</p> : null}
       </section>
     </div>
   );
