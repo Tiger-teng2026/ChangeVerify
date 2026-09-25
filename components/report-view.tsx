@@ -17,11 +17,27 @@ const VERDICT_VIEW = {
     tone: "border-[#b45309] bg-[#fffbeb] text-[#9a3412]",
   },
   HIGH_RISK: {
-    label: "SIGNIFICANT MISMATCH",
-    note: "The provided diff appears to depart from the requested task in a significant way.",
+    label: "NEEDS REVIEW",
+    note: "The AI coding agent changed more than your original request.",
     tone: "border-[#9f1239] bg-[#fff1f2] text-[#9f1239]",
   },
 } as const;
+
+const RECOMMENDED_ACTION: Record<VerificationReport["verdict"], string> = {
+  PASS: "The changes appear consistent with your original request. Do one final review of the diff before you ship.",
+  REVIEW:
+    "Review the items above before you ship. Confirm the requested work is present and that the change stays within the original task.",
+  HIGH_RISK:
+    "Pause before shipping. Revert changes that go beyond your original request, then check the diff again.",
+};
+
+const FULL_REPORT_INCLUDES = [
+  "Requirement coverage analysis",
+  "Missing requirement detection",
+  "Scope creep analysis",
+  "File impact review",
+  "Suggested next actions",
+];
 
 const STATUS_LABEL: Record<VerificationReport["requirements"][number]["status"], string> = {
   completed: "Completed",
@@ -185,6 +201,8 @@ function FullReport({ result }: { result: StoredFull }) {
         )}
       </section>
 
+      <RecommendedAction verdict={report.verdict} />
+
       <AiHandoff report={report} />
 
       <section>
@@ -252,12 +270,21 @@ function PreviewReport({
           </ol>
         )}
       </section>
+      <RecommendedAction verdict={result.preview.verdict} />
+      <section>
+        <h2 className="text-lg font-semibold">Full Report Includes</h2>
+        <ul className="mt-4 list-disc space-y-2 pl-5 text-sm leading-6 text-[#3f3832]">
+          {FULL_REPORT_INCLUDES.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+      </section>
       <section className="rounded-xl border border-[#e4d9c8] bg-white px-5 py-5">
         <h2 className="text-lg font-semibold">Unlock Full Report</h2>
         <p className="mt-2 text-sm leading-6 text-[#5c5348]">{UNLOCK_PRICE_LABEL} one-time</p>
-        <p className="mt-2 text-sm leading-6 text-[#5c5348]">
-          Requirement coverage, missing requirements, scope creep, and risky changes open after
-          Creem confirms the payment.
+        <p className="mt-4 text-sm leading-6 text-[#5c5348]">
+          Your code diff is only analyzed for this verification. ChangeVerify does not access your
+          repository or store your code history.
         </p>
         <button
           type="button"
@@ -270,6 +297,15 @@ function PreviewReport({
         {unlockError ? <p className="mt-3 text-sm text-[#9f1239]">{unlockError}</p> : null}
       </section>
     </div>
+  );
+}
+
+function RecommendedAction({ verdict }: { verdict: VerificationReport["verdict"] }) {
+  return (
+    <section>
+      <h2 className="text-lg font-semibold">Recommended Action</h2>
+      <p className="mt-3 text-sm leading-7 text-[#3f3832]">{RECOMMENDED_ACTION[verdict]}</p>
+    </section>
   );
 }
 
