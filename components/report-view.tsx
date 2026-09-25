@@ -301,7 +301,7 @@ function PreviewReport({
         </ul>
       </section>
       <section className="rounded-xl border border-[#e4d9c8] bg-white px-5 py-5">
-        <h2 className="text-lg font-semibold">Unlock Full Report for This Change</h2>
+        <h2 className="text-lg font-semibold">Unlock This Report</h2>
         <p className="mt-2 text-sm leading-6 text-[#5c5348]">{UNLOCK_PRICE_LABEL}</p>
         <div className="mt-3 text-sm leading-6 text-[#5c5348]">
           <p>One-time payment for this verification report.</p>
@@ -319,7 +319,7 @@ function PreviewReport({
           disabled={unlockPending || !onUnlock}
           className="mt-4 rounded-full bg-[#1c1915] px-6 py-3 text-sm font-semibold text-[#f3efe6] disabled:cursor-not-allowed disabled:opacity-40"
         >
-          {unlockPending ? "Opening checkout…" : "Unlock Full Report for This Change"}
+          {unlockPending ? "Opening checkout…" : "Unlock This Report"}
         </button>
         {unlockError ? <p className="mt-3 text-sm text-[#9f1239]">{unlockError}</p> : null}
       </section>
