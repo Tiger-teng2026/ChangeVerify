@@ -108,7 +108,7 @@ export function VerifyForm({
   }
 
   return (
-    <form onSubmit={onSubmit} className="mt-10 space-y-8">
+    <form id="verify" onSubmit={onSubmit} className="mt-10 scroll-mt-8 space-y-8">
       <div>
         <label htmlFor="original-task" className="block text-base font-semibold">
           1. Paste the original instruction you gave your AI coding tool

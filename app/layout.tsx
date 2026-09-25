@@ -13,9 +13,14 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ChangeVerify",
+  title: "ChangeVerify - Verify AI Coding Agent Changes Before Shipping",
   description:
-    "Paste your original task and Git diff. Get an independent check for missing requirements, scope creep, and risky changes before you ship.",
+    "Verify whether AI coding agents actually completed your request. Analyze Git diff to find missing requirements, unexpected changes, and risky modifications before shipping.",
+  openGraph: {
+    title: "ChangeVerify - Verify AI Coding Agent Changes",
+    description:
+      "Check whether Cursor, Claude Code, and other AI coding agents actually did what you asked.",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
