@@ -16,6 +16,8 @@ export function Shell({ children }: { children: ReactNode }) {
       <main className="mx-auto w-full max-w-3xl flex-1 px-6 py-12">{children}</main>
       <footer className="border-t border-[#e4d9c8]">
         <div className="mx-auto flex max-w-3xl gap-5 px-6 py-5 text-sm text-[#5c5348]">
+          <Link href="/about">About</Link>
+          <Link href="/contact">Contact</Link>
           <Link href="/privacy">Privacy</Link>
           <Link href="/terms">Terms</Link>
         </div>
