@@ -269,6 +269,10 @@ function PreviewReport({
             This is a free preview of this change. One payment unlocks the full report for this
             change only.
           </p>
+          <p className="mt-2">
+            This is an AI analysis of the text you submitted. It can miss issues or be wrong. It
+            does not verify runtime behavior, test results, repository-wide correctness, or security.
+          </p>
         </div>
       </section>
       <section>
