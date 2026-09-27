@@ -23,6 +23,32 @@ export default function HomePage() {
         Verify AI Changes
       </a>
       <ProductIntro />
+      <section className="mt-10">
+        <h2 className="text-xs font-semibold tracking-[0.16em] uppercase text-[#6b6258]">Trust</h2>
+        <div className="mt-4 grid gap-4 sm:grid-cols-3">
+          <div className="rounded-lg border border-[#e4d9c8] bg-[#faf7f1] px-4 py-3 text-sm leading-6 text-[#3f3832]">
+            <h3 className="font-semibold text-[#1c1915]">Privacy</h3>
+            <p className="mt-2">
+              You paste the diff. ChangeVerify does not access your repository, and it does not keep
+              a code history.
+            </p>
+          </div>
+          <div className="rounded-lg border border-[#e4d9c8] bg-[#faf7f1] px-4 py-3 text-sm leading-6 text-[#3f3832]">
+            <h3 className="font-semibold text-[#1c1915]">Product Boundary</h3>
+            <p className="mt-2">
+              The report is an AI check of the text you submit. It does not prove the code is
+              correct, secure, or ready to ship.
+            </p>
+          </div>
+          <div className="rounded-lg border border-[#e4d9c8] bg-[#faf7f1] px-4 py-3 text-sm leading-6 text-[#3f3832]">
+            <h3 className="font-semibold text-[#1c1915]">Payment</h3>
+            <p className="mt-2">
+              $4.99 is a one-time purchase of the full report for this change. It is not a
+              subscription.
+            </p>
+          </div>
+        </div>
+      </section>
       <VerifyForm hardMaxDiffChars={readHardMaxDiffChars()} maxTaskChars={MAX_TASK_CHARS} />
     </Shell>
   );
