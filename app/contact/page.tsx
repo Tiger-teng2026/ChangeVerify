@@ -5,6 +5,9 @@ import { Shell } from "@/components/shell";
 export const metadata: Metadata = {
   title: "Contact - ChangeVerify",
   description: "Contact the independent developer behind ChangeVerify.",
+  alternates: {
+    canonical: "/contact",
+  },
 };
 
 export default function ContactPage() {

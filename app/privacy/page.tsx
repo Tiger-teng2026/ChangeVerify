@@ -4,6 +4,9 @@ import { Shell } from "@/components/shell";
 export const metadata: Metadata = {
   title: "Privacy Policy - ChangeVerify",
   description: "How ChangeVerify handles the original task and Git diff you submit for one verification.",
+  alternates: {
+    canonical: "/privacy",
+  },
 };
 
 export default function PrivacyPage() {

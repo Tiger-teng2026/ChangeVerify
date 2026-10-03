@@ -4,6 +4,9 @@ import { Shell } from "@/components/shell";
 export const metadata: Metadata = {
   title: "Terms of Service - ChangeVerify",
   description: "Terms for using ChangeVerify to buy one AI code change verification report.",
+  alternates: {
+    canonical: "/terms",
+  },
 };
 
 export default function TermsPage() {

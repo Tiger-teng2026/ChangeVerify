@@ -6,6 +6,9 @@ export const metadata: Metadata = {
   title: "About - ChangeVerify",
   description:
     "ChangeVerify is an independent developer project that checks one AI code change against the original task and Git diff.",
+  alternates: {
+    canonical: "/about",
+  },
 };
 
 export default function AboutPage() {

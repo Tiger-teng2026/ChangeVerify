@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://changeverify.vercel.app"),
+  metadataBase: new URL("https://www.changeverify.com"),
   title: "ChangeVerify - Verify AI Coding Agent Changes Before Shipping",
   description:
     "Verify whether AI coding agents actually completed your request. Analyze Git diff to find missing requirements, unexpected changes, and risky modifications before shipping.",

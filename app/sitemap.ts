@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const siteUrl = "https://changeverify.vercel.app";
+const siteUrl = "https://www.changeverify.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
