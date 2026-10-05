@@ -19,8 +19,8 @@ export default function ContactPage() {
           <h2 className="text-lg font-semibold text-[#1c1915]">Email</h2>
           <p>Questions about ChangeVerify can be sent to:</p>
           <p>
-            <a href="mailto:tigerteng2026@outlook.com" className="font-semibold text-[#9a3412]">
-              tigerteng2026@outlook.com
+            <a href="mailto:support@changeverify.com" className="font-semibold text-[#9a3412]">
+              support@changeverify.com
             </a>
           </p>
         </section>

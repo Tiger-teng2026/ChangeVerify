@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const siteUrl = "https://www.changeverify.com";
+const siteUrl = "https://changeverify.com";
 
 export default function robots(): MetadataRoute.Robots {
   return {

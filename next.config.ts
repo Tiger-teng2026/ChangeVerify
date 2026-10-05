@@ -11,7 +11,18 @@ const nextConfig: NextConfig = {
             value: "changeverify.vercel.app",
           },
         ],
-        destination: "https://www.changeverify.com/:path*",
+        destination: "https://changeverify.com/:path*",
+        permanent: true,
+      },
+      {
+        source: "/:path*",
+        has: [
+          {
+            type: "host",
+            value: "www.changeverify.com",
+          },
+        ],
+        destination: "https://changeverify.com/:path*",
         permanent: true,
       },
     ];
