@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
@@ -8,8 +9,15 @@ export function Shell({ children }: { children: ReactNode }) {
     <div className="flex min-h-full flex-col bg-[#f3efe6] text-[#1c1915]">
       <header className="border-b border-[#e4d9c8]">
         <div className="mx-auto flex max-w-3xl items-center px-6 py-5">
-          <Link href="/" className="text-sm font-semibold tracking-[0.22em] uppercase">
-            ChangeVerify
+          <Link href="/" className="inline-flex items-center">
+            <Image
+              src="/logo.png"
+              alt="ChangeVerify"
+              width={937}
+              height={182}
+              priority
+              className="h-8 w-auto"
+            />
           </Link>
         </div>
       </header>
