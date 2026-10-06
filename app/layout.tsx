@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Script from "next/script";
+import { Analytics } from "@vercel/analytics/next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -15,22 +16,26 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://changeverify.com"),
-  title: "ChangeVerify - Verify AI Coding Agent Changes Before Shipping",
+  title: "ChangeVerify - Verify AI Coding Agent Code Changes Before Shipping | Cursor",
   description:
-    "Verify whether AI coding agents actually completed your request. Analyze Git diff to find missing requirements, unexpected changes, and risky modifications before shipping.",
+    "Verify Git diffs from Cursor and Claude Code before you ship. Catch missing requirements, unexpected changes, and risky modifications from AI coding agents.",
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: "ChangeVerify - Verify AI Coding Agent Changes",
+    title: "ChangeVerify - Verify AI Coding Agent Code Changes Before Shipping | Cursor",
     description:
-      "Check whether Cursor, Claude Code, and other AI coding agents actually did what you asked.",
+      "Verify Git diffs from Cursor and Claude Code before you ship. Catch missing requirements, unexpected changes, and risky modifications from AI coding agents.",
+    url: "https://changeverify.com",
+    type: "website",
+    siteName: "ChangeVerify",
+    locale: "en_US",
   },
   twitter: {
-    card: "summary",
-    title: "ChangeVerify - Verify AI Coding Agent Changes",
+    card: "summary_large_image",
+    title: "ChangeVerify - Verify AI Coding Agent Code Changes Before Shipping | Cursor",
     description:
-      "Check whether Cursor, Claude Code, and other AI coding agents actually did what you asked.",
+      "Verify Git diffs from Cursor and Claude Code before you ship. Catch missing requirements, unexpected changes, and risky modifications from AI coding agents.",
   },
 };
 
@@ -58,6 +63,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
 </Script>
 
 {children}
+<Analytics />
 
 </body>
     </html>

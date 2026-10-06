@@ -14,17 +14,6 @@ const nextConfig: NextConfig = {
         destination: "https://changeverify.com/:path*",
         permanent: true,
       },
-      {
-        source: "/:path*",
-        has: [
-          {
-            type: "host",
-            value: "www.changeverify.com",
-          },
-        ],
-        destination: "https://changeverify.com/:path*",
-        permanent: true,
-      },
     ];
   },
 };

@@ -143,7 +143,9 @@ export async function createCreemCheckout(
   if (typeof body.checkout_url !== "string" || !body.checkout_url.startsWith("https://")) {
     return { ok: false, errorCode: "checkout_failed" };
   }
-  return { ok: true, checkoutUrl: body.checkout_url };
+  const checkoutUrl = new URL(body.checkout_url);
+  checkoutUrl.searchParams.set("locale", "en");
+  return { ok: true, checkoutUrl: checkoutUrl.toString() };
 }
 
 export async function retrieveCreemCheckout(
