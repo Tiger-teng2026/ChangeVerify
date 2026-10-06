@@ -28,5 +28,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${siteUrl}/ai-generated-code-review`,
       lastModified: new Date(),
     },
+    {
+      url: `${siteUrl}/how-to-verify-ai-generated-code`,
+      lastModified: new Date(),
+    },
+    {
+      url: `${siteUrl}/vibe-coding-mistakes`,
+      lastModified: new Date(),
+    },
   ];
 }
