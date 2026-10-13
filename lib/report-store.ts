@@ -21,6 +21,8 @@ export type StoredFull = {
   verificationId: string;
   truncated: boolean;
   report: VerificationReport;
+  /** Set only when the server unlocked this report in local developer mode. */
+  developerMode?: boolean;
 };
 
 export type StoredReport = StoredPreview | StoredFull;

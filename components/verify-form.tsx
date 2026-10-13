@@ -5,7 +5,14 @@ import { useRouter } from "next/navigation";
 import { DiffHelp } from "@/components/diff-help";
 import { focusSecretField, SecretWarning } from "@/components/secret-warning";
 import { DIFF_TOO_LARGE_ERROR, diffLimitState } from "@/lib/limits";
-import { setStoredPreview, type StoredPreview } from "@/lib/report-store";
+import {
+  clearStoredReport,
+  setStoredFullReport,
+  setStoredPreview,
+  type StoredPreview,
+} from "@/lib/report-store";
+import type { VerificationReport } from "@/lib/schema";
+import { trackEvent } from "@/lib/analytics";
 import { detectPotentialSecrets, redactFindings, type SecretFinding } from "@/lib/secret-detection";
 
 const TEMPORARY_FAILURE = "Verification temporarily failed. Please try again.";
@@ -67,6 +74,7 @@ export function VerifyForm({
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (blocked) return;
+    trackEvent("verify_submit");
     setPending(true);
     setError(null);
     try {
@@ -76,7 +84,11 @@ export function VerifyForm({
         body: JSON.stringify({ originalTask, gitDiff }),
       });
       const payload = (await response.json().catch(() => null)) as
-        | (StoredPreview & { error?: string })
+        | (StoredPreview & {
+            error?: string;
+            developerMode?: boolean;
+            report?: VerificationReport;
+          })
         | null;
       if (
         !response.ok ||
@@ -88,15 +100,28 @@ export function VerifyForm({
         setError(payload?.error || TEMPORARY_FAILURE);
         return;
       }
-      setStoredPreview({
-        access: "preview",
-        requestId: payload.requestId,
-        verificationId: payload.verificationId,
-        reportHash: payload.reportHash,
-        unlockToken: payload.unlockToken,
-        truncated: Boolean(payload.truncated),
-        preview: payload.preview,
-      });
+      trackEvent("verification_complete");
+      if (payload.developerMode === true && payload.report && payload.requestId) {
+        clearStoredReport();
+        setStoredFullReport({
+          access: "full",
+          requestId: payload.requestId,
+          verificationId: payload.verificationId,
+          truncated: Boolean(payload.truncated),
+          report: payload.report,
+          developerMode: true,
+        });
+      } else {
+        setStoredPreview({
+          access: "preview",
+          requestId: payload.requestId,
+          verificationId: payload.verificationId,
+          reportHash: payload.reportHash,
+          unlockToken: payload.unlockToken,
+          truncated: Boolean(payload.truncated),
+          preview: payload.preview,
+        });
+      }
       setOriginalTask("");
       setGitDiff("");
       router.push("/result");
@@ -200,6 +225,7 @@ export function VerifyForm({
       <button
         type="submit"
         disabled={blocked}
+        onClick={() => trackEvent("verify_start")}
         className="rounded-full bg-[#1c1915] px-6 py-3 text-sm font-semibold text-[#f3efe6] disabled:cursor-not-allowed disabled:opacity-40"
       >
         Verify AI Changes

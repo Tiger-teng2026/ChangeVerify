@@ -56,6 +56,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   {`
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
+    window.gtag = gtag;
     gtag('js', new Date());
 
     gtag('config', 'G-08ZLGNEC0T');

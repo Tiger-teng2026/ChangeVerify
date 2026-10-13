@@ -1,4 +1,5 @@
 import { readHardMaxDiffChars } from "@/lib/config";
+import { isDeveloperMode } from "@/lib/dev-mode";
 import { verifyChange } from "@/lib/deepseek";
 import { DIFF_TOO_LARGE_ERROR, MAX_TASK_CHARS } from "@/lib/limits";
 import { logVerifyEvent } from "@/lib/log";
@@ -109,6 +110,8 @@ export async function POST(request: Request) {
     });
   }
 
+  const developerMode = isDeveloperMode();
+
   return finish(requestId, started, 200, {
     requestId,
     verificationId: sealed.verificationId,
@@ -116,6 +119,7 @@ export async function POST(request: Request) {
     unlockToken: sealed.unlockToken,
     preview: sealed.preview,
     truncated: result.truncated,
+    ...(developerMode ? { developerMode: true as const, report: result.report } : {}),
   }, {
     taskCharCount,
     diffCharCount,

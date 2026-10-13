@@ -1,6 +1,7 @@
 "use client";
 
 import { AiHandoff } from "@/components/ai-handoff";
+import { trackEvent } from "@/lib/analytics";
 import { UNLOCK_PRICE_LABEL } from "@/lib/unlock";
 import type { StoredFull, StoredPreview, StoredReport } from "@/lib/report-store";
 import type { VerificationReport } from "@/lib/schema";
@@ -90,6 +91,9 @@ function FullReport({ result }: { result: StoredFull }) {
 
   return (
     <div className="space-y-10">
+      {result.developerMode ? (
+        <p className="text-xs text-[#6b6258]">Developer Mode — Full report unlocked locally</p>
+      ) : null}
       <section>
         <h1 className="text-sm font-semibold tracking-[0.16em] uppercase text-[#6b6258]">
           Overall Verdict
@@ -319,7 +323,10 @@ function PreviewReport({
         </div>
         <button
           type="button"
-          onClick={onUnlock}
+          onClick={() => {
+            trackEvent("pro_export_click");
+            onUnlock?.();
+          }}
           disabled={unlockPending || !onUnlock}
           className="mt-4 rounded-full bg-[#1c1915] px-6 py-3 text-sm font-semibold text-[#f3efe6] disabled:cursor-not-allowed disabled:opacity-40"
         >

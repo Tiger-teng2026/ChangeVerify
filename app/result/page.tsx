@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, useSyncExternalStore } from "react";
 import { ReportView } from "@/components/report-view";
 import { Shell } from "@/components/shell";
+import { trackCheckoutStart } from "@/lib/analytics";
 import { clearStoredReport, getStoredReport } from "@/lib/report-store";
 
 function subscribe() {
@@ -31,6 +32,7 @@ export default function ResultPage() {
         setUnlockPending(false);
         return;
       }
+      trackCheckoutStart();
       window.location.assign(payload.checkoutUrl);
     } catch {
       setUnlockError("Checkout could not be started. Please try again.");

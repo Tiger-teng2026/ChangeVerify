@@ -36,5 +36,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${siteUrl}/vibe-coding-mistakes`,
       lastModified: new Date(),
     },
+    {
+      url: `${siteUrl}/cursor-not-following-instructions`,
+      lastModified: new Date(),
+    },
   ];
 }

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Suspense, useEffect, useSyncExternalStore } from "react";
 import { ReportView } from "@/components/report-view";
 import { Shell } from "@/components/shell";
+import { trackPurchase } from "@/lib/analytics";
 import { readPaymentSession, setStoredFullReport, type StoredFull } from "@/lib/report-store";
 import type { VerificationReport } from "@/lib/schema";
 
@@ -100,6 +101,12 @@ function SuccessCheck() {
     const checkoutId = new URLSearchParams(window.location.search).get("checkout_id") ?? "";
     beginPaymentCheck(checkoutId);
   }, []);
+
+  useEffect(() => {
+    if (current.status !== "unlocked") return;
+    const checkoutId = new URLSearchParams(window.location.search).get("checkout_id") ?? "";
+    trackPurchase(checkoutId);
+  }, [current.status]);
 
   return (
     <Shell>
