@@ -38,25 +38,6 @@ export default function HomePage() {
       </section>
       <section className="mt-10">
         <h2 className="text-xs font-semibold tracking-[0.16em] uppercase text-[#6b6258]">
-          The solution
-        </h2>
-        <p className="mt-4 text-sm leading-6 text-[#3f3832]">ChangeVerify compares:</p>
-        <p className="mt-3 text-sm font-semibold leading-7 text-[#1c1915]">
-          Original Task
-          <br />+
-          <br />
-          AI Generated Diff
-        </p>
-        <p className="mt-3 text-sm leading-6 text-[#3f3832]">and identifies:</p>
-        <ul className="mt-3 list-disc space-y-1 pl-5 text-sm leading-6 text-[#3f3832]">
-          <li>missing requirements</li>
-          <li>unexpected changes</li>
-          <li>scope creep</li>
-          <li>risky modifications</li>
-        </ul>
-      </section>
-      <section className="mt-10">
-        <h2 className="text-xs font-semibold tracking-[0.16em] uppercase text-[#6b6258]">
           Real Example
         </h2>
         <article className="mt-4 rounded-lg border border-[#e4d9c8] bg-white px-4 py-4 text-sm leading-6">
@@ -95,6 +76,7 @@ export default function HomePage() {
         </article>
       </section>
       <ProductIntro />
+      <VerifyForm hardMaxDiffChars={readHardMaxDiffChars()} maxTaskChars={MAX_TASK_CHARS} />
       <section className="mt-10">
         <h2 className="text-xs font-semibold tracking-[0.16em] uppercase text-[#6b6258]">Trust</h2>
         <div className="mt-4 grid gap-4 sm:grid-cols-3">
@@ -121,7 +103,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-      <VerifyForm hardMaxDiffChars={readHardMaxDiffChars()} maxTaskChars={MAX_TASK_CHARS} />
     </Shell>
   );
 }
