@@ -4,6 +4,7 @@ import { AiHandoff } from "@/components/ai-handoff";
 import { trackEvent } from "@/lib/analytics";
 import { UNLOCK_PRICE_LABEL } from "@/lib/unlock";
 import type { StoredFull, StoredPreview, StoredReport } from "@/lib/report-store";
+import type { ReportPreview } from "@/lib/report-token";
 import type { VerificationReport } from "@/lib/schema";
 
 const VERDICT_VIEW = {
@@ -32,27 +33,20 @@ const RECOMMENDED_ACTION: Record<VerificationReport["verdict"], string> = {
     "Pause before shipping. Revert changes that go beyond your original request, then check the diff again.",
 };
 
-const FULL_REPORT_INCLUDES = [
-  {
-    title: "Complete verification report for this AI code change",
-    detail: "The full report for this change only. It does not unlock other changes.",
-  },
-  {
-    title: "Requirement coverage analysis",
-    detail: "See which parts of the original task this change appears to cover.",
-  },
-  {
-    title: "Scope creep detection",
-    detail: "See changes that go beyond the original request.",
-  },
-  {
-    title: "Risky change review",
-    detail: "See changes that may need attention before you ship.",
-  },
-  {
-    title: "AI fix instructions",
-    detail: "Get instructions you can paste into your AI coding tool.",
-  },
+const PREVIEW_UNLOCK_REASONS = [
+  "Which files caused the violation",
+  "Why the change conflicts with your instructions",
+  "Complete review checklist",
+  "Recommended fixes",
+  "AI fix instructions",
+];
+
+const COMPLETE_REPORT_INCLUDES = [
+  "Requirement-by-requirement analysis",
+  "Unexpected change explanation",
+  "Scope violation details",
+  "Risk review",
+  "AI fix instructions",
 ];
 
 const STATUS_LABEL: Record<VerificationReport["requirements"][number]["status"], string> = {
@@ -245,6 +239,14 @@ function FullReport({ result }: { result: StoredFull }) {
   );
 }
 
+function detectedCopy(preview: ReportPreview): string {
+  const count = preview.reviewFocus.length;
+  if (count === 1) return "1 unexpected change found.";
+  if (count > 1) return `${count} unexpected changes found.`;
+  if (preview.verdict === "PASS") return "No unexpected changes found.";
+  return "This change needs a closer look.";
+}
+
 function PreviewReport({
   result,
   onUnlock,
@@ -282,29 +284,16 @@ function PreviewReport({
       <section>
         <h2 className="text-lg font-semibold">Summary</h2>
         <p className="mt-3 text-sm leading-7 text-[#3f3832]">{result.preview.summary}</p>
-        <p className="mt-3 text-sm text-[#6b6258]">Files changed: {result.preview.filesChanged}</p>
       </section>
       <section>
-        <h2 className="text-lg font-semibold">Top 3 Things to Review</h2>
-        {result.preview.reviewFocus.length === 0 ? (
-          <Empty />
-        ) : (
-          <ol className="mt-4 list-decimal space-y-2 pl-5 text-sm leading-6 text-[#3f3832]">
-            {result.preview.reviewFocus.map((item, index) => (
-              <li key={`${item}-${index}`}>{item}</li>
-            ))}
-          </ol>
-        )}
+        <h2 className="text-lg font-semibold">Detected</h2>
+        <p className="mt-3 text-sm leading-7 text-[#3f3832]">{detectedCopy(result.preview)}</p>
       </section>
-      <RecommendedAction verdict={result.preview.verdict} />
       <section>
-        <h2 className="text-lg font-semibold">What you get</h2>
-        <ul className="mt-4 space-y-3">
-          {FULL_REPORT_INCLUDES.map((item) => (
-            <li key={item.title} className="rounded-lg border border-[#e4d9c8] bg-[#faf7f1] px-4 py-3">
-              <p className="font-semibold text-[#1c1915]">{item.title}</p>
-              <p className="mt-1 text-[#5c5348]">{item.detail}</p>
-            </li>
+        <h2 className="text-lg font-semibold">Unlock full report to see</h2>
+        <ul className="mt-4 list-disc space-y-2 pl-5 text-sm leading-6 text-[#3f3832]">
+          {PREVIEW_UNLOCK_REASONS.map((item) => (
+            <li key={item}>{item}</li>
           ))}
         </ul>
       </section>
@@ -315,6 +304,14 @@ function PreviewReport({
           <p>One-time payment for this verification report.</p>
           <p>No subscription.</p>
           <p>No recurring charges.</p>
+        </div>
+        <div className="mt-4">
+          <p className="text-sm font-semibold text-[#1c1915]">Complete verification report includes:</p>
+          <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-[#5c5348]">
+            {COMPLETE_REPORT_INCLUDES.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
         </div>
         <div className="mt-4 rounded-lg border border-[#e4d9c8] bg-[#faf7f1] px-4 py-3 text-sm leading-6 text-[#5c5348]">
           <p>Based on the Original Task and Git diff you provided.</p>
