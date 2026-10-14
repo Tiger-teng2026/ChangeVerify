@@ -8,7 +8,7 @@ import type { VerificationReport } from "@/lib/schema";
 
 const VERDICT_VIEW = {
   PASS: {
-    label: "LIKELY MATCH",
+    label: "Task Alignment",
     note: "Changes appear consistent with the requested task based on the provided diff.",
     tone: "border-[#166534] bg-[#f0fdf4] text-[#14532d]",
   },
@@ -123,7 +123,7 @@ function FullReport({ result }: { result: StoredFull }) {
       </section>
 
       <section>
-        <h2 className="text-lg font-semibold">Requirement Coverage</h2>
+        <h2 className="text-lg font-semibold">Did the AI complete your request?</h2>
         {report.requirements.length === 0 ? (
           <Empty />
         ) : (
@@ -169,7 +169,7 @@ function FullReport({ result }: { result: StoredFull }) {
       </section>
 
       <section>
-        <h2 className="text-lg font-semibold">Possible Scope Creep</h2>
+        <h2 className="text-lg font-semibold">Unexpected Changes</h2>
         {report.outOfScopeChanges.length === 0 ? (
           <Empty />
         ) : (
@@ -188,7 +188,7 @@ function FullReport({ result }: { result: StoredFull }) {
       </section>
 
       <section>
-        <h2 className="text-lg font-semibold">Risky Changes</h2>
+        <h2 className="text-lg font-semibold">Review Before Shipping</h2>
         {report.riskyChanges.length === 0 ? (
           <Empty />
         ) : (

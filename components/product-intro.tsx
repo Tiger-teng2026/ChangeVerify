@@ -89,11 +89,11 @@ export function ProductIntro() {
           What it does
         </h2>
         <div className="mt-3 max-w-2xl space-y-3">
-          <p>ChangeVerify gives you a second opinion on AI-generated code changes.</p>
-          <p>Paste what you asked your AI coding tool to do, then paste the Git diff.</p>
+          <p>Verify your AI coding agent before you ship.</p>
+          <p>Make sure your AI coding assistant did only what you asked.</p>
           <p>
-            ChangeVerify checks whether the changes appear to match your request, whether anything
-            may be missing, and whether the AI changed more than you expected.
+            ChangeVerify compares your original task with the AI-generated diff. It checks whether
+            the agent followed your instructions. It is not a general code review.
           </p>
         </div>
       </section>
