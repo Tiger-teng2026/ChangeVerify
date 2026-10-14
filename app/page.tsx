@@ -55,6 +55,45 @@ export default function HomePage() {
           <li>risky modifications</li>
         </ul>
       </section>
+      <section className="mt-10">
+        <h2 className="text-xs font-semibold tracking-[0.16em] uppercase text-[#6b6258]">
+          Real Example
+        </h2>
+        <article className="mt-4 rounded-lg border border-[#e4d9c8] bg-white px-4 py-4 text-sm leading-6">
+          <dl className="space-y-4">
+            <div>
+              <dt className="font-semibold text-[#1c1915]">You asked:</dt>
+              <dd className="mt-1 whitespace-pre-line text-[#3f3832]">
+                {"Add login feature.\nDo not change payment logic."}
+              </dd>
+            </div>
+            <div>
+              <dt className="font-semibold text-[#1c1915]">AI changed:</dt>
+              <dd className="mt-1 whitespace-pre-line text-[#3f3832]">
+                {"auth/login.ts\npayment/checkout.ts"}
+              </dd>
+            </div>
+            <div>
+              <dt className="font-semibold text-[#1c1915]">ChangeVerify found:</dt>
+              <dd className="mt-1 text-[#3f3832]">
+                <p className="font-medium text-[#1c1915]">Unexpected change detected.</p>
+                <p className="mt-1">
+                  The AI modified payment/checkout.ts even though it was outside the original
+                  request.
+                </p>
+              </dd>
+            </div>
+            <div>
+              <dt className="font-semibold text-[#1c1915]">Recommendation:</dt>
+              <dd className="mt-1 text-[#3f3832]">Review the payment change before shipping.</dd>
+            </div>
+            <div>
+              <dt className="font-semibold text-[#1c1915]">Final Status:</dt>
+              <dd className="mt-1 font-semibold text-[#9a3412]">NEEDS REVIEW</dd>
+            </div>
+          </dl>
+        </article>
+      </section>
       <ProductIntro />
       <section className="mt-10">
         <h2 className="text-xs font-semibold tracking-[0.16em] uppercase text-[#6b6258]">Trust</h2>
